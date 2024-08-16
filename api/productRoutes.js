@@ -7,11 +7,10 @@ const formatResponse = require("../formatResponse");
 router.get("/products", async (req, res) => {
   try {
     const products = await Product.find().exec();
-    res.json(formatResponse(products));
+    res.json(formatResponse(200, "Products fetched Succesfully", products));
   } catch (err) {
     console.error(err);
-    res.send(`${err} Express on Vercel`);
-    // res.status(500).json({ message: "Error fetching products" });
+    res.status(500).json({ message: "Error fetching products" });
   }
 });
 

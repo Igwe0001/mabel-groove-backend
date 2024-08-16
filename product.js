@@ -16,11 +16,16 @@ const productSchema = new mongoose.Schema({
   productReviews: [reviewSchema],
 });
 
+productSchema.virtual("productCode").get(function () {
+  return this.productName.toLowerCase().replace(/\s+/g, "-");
+});
+
 productSchema.set("toJSON", {
   transform: (doc, ret) => {
     ret.id = ret._id; // rename _id to id
     delete ret._id; // remove _id
     delete ret.__v; // remove __v
+    ret.productCode = doc.productCode; // add productCode to the JSON output
     return ret;
   },
 });
