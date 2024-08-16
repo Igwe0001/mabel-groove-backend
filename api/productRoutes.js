@@ -4,15 +4,14 @@ const Product = require("../product");
 const formatResponse = require("../formatResponse");
 
 // Get all products
-router.get("/products", async (req, res) => {
-  res.send("products on Vercel");
-  // try {
-  //   const products = await Product.find().exec();
-  //   res.json(formatResponse(products));
-  // } catch (err) {
-  //   console.error(err);
-  //   res.status(500).json({ message: "Error fetching products" });
-  // }
+router.get("/products", (req, res) => {
+  Product.find()
+    .exec()
+    .then((products) => res.json(formatResponse(products)))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ message: "Error fetching products" });
+    });
 });
 
 // Add a new product
