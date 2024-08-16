@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-app.use(morgan("dev")); 
+app.use(morgan("dev"));
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -26,7 +26,7 @@ mongoose
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
-
+app.get("/", (req, res) => res.send("Express on Vercel"));
 const productRoutes = require("./api/productRoutes");
 app.use("/api", productRoutes);
 
