@@ -34,8 +34,8 @@ app.use(
   })
 );
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(1711, () => {
+  console.log("Server is running on port 1711");
 });
 app.get("/", (req, res) => res.send("Express on Vercel"));
 const productRoutes = require("./api/productRoutes");
