@@ -17,7 +17,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => {
     console.error("MongoDB connection error:", err);
-    process.exit(1);
+    process.exit(10000);
   });
 
 app.listen(3000, () => {
@@ -37,6 +37,7 @@ app.use((err, req, res, next) => {
   res
     .status(500)
     .json({ code: 500, message: "Internal Server Error", body: {} });
+  next(err); // Pass the error to the next middleware function
 });
 
 module.exports = app;
