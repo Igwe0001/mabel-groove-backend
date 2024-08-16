@@ -14,12 +14,11 @@ const productSchema = new mongoose.Schema({
   productImageUrl: String,
   productReviewImageUrl: String,
   productReviews: [reviewSchema],
-  productCode: this.productName.toLowerCase().replace(/\s+/g, "-"),
 });
 
-// productSchema.virtual("productCode").get(function () {
-//   return this.productName.toLowerCase().replace(/\s+/g, "-");
-// });
+productSchema.virtual("productCode").get(function () {
+  return this.productName.toLowerCase().replace(/\s+/g, "-");
+});
 
 productSchema.set("toJSON", {
   transform: (doc, ret) => {
