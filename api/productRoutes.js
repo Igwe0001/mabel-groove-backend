@@ -29,8 +29,16 @@ router.post("/products", async (req, res) => {
 // Get a product by productCode
 router.get("/products/:productCode", async (req, res) => {
   const productCode = req.params.productCode;
+
   try {
-    const product = await Product.findOne({ productCode: productCode });
+    // Calculate the productName from the productCode
+    const productName = productCode.replace(/-/g, " ").toLowerCase();
+
+    // Find the product by productName and compare case-insensitively
+    const product = await Product.findOne({
+      productName: { $regex: new RegExp(`^${productName}$`, "i") }
+    });
+
     if (!product) {
       return res
         .status(404)
@@ -42,6 +50,7 @@ router.get("/products/:productCode", async (req, res) => {
     res.status(500).json(formatResponse(500, "Internal Server Error", null));
   }
 });
+
 
 // Delete a product by ID
 router.delete("/products/:id", async (req, res) => {
