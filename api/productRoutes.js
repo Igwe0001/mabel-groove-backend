@@ -27,6 +27,21 @@ router.post("/products", async (req, res) => {
   }
 });
 
+// Get a product by productCode
+router.get("products/:productCode", async (req, res) => {
+  const productCode = req.params.productCode;
+  try {
+    const product = await Product.findOne({ productCode: productCode });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // Delete a product by ID
 router.delete("/products/:id", async (req, res) => {
   try {
