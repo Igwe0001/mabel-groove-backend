@@ -1,0 +1,117 @@
+const express = require("express");
+const Product = require("./product");
+const formatResponse = require("./formatResponse");
+const router = express.Router();
+
+// Get all products
+router.get("/products", async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json(formatResponse(200, "Products fetched successfully", products));
+  } catch (err) {
+    res.status(500).json(formatResponse(500, "Failed to get products", null));
+  }
+});
+
+// Add a new product
+router.post("/products", async (req, res) => {
+  const newProduct = new Product(req.body);
+  try {
+    const savedProduct = await newProduct.save();
+    res
+      .status(201)
+      .json(formatResponse(200, "Product added successfully", savedProduct));
+  } catch (err) {
+    res.status(400).json(formatResponse(400, "Failed to add product", null));
+  }
+});
+
+// Delete a product by ID
+router.delete("/products/:id", async (req, res) => {
+  try {
+    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    if (!deletedProduct) {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
+    }
+    res.json(
+      formatResponse(200, "Product deleted successfully", deletedProduct)
+    );
+  } catch (err) {
+    res.status(500).json(formatResponse(500, "Failed to delete product", null));
+  }
+});
+
+// Update a product by ID
+router.put("/products/:id", async (req, res) => {
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
+    }
+    res.json(
+      formatResponse(200, "Product updated successfully", updatedProduct)
+    );
+  } catch (err) {
+    res.status(400).json(formatResponse(400, "Failed to update product", null));
+  }
+});
+
+// Add a review to a product
+router.post("/products/:id/reviews", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
+    }
+    product.productReviews.push(req.body);
+    await product.save();
+    res
+      .status(201)
+      .json(formatResponse(201, "Review added successfully", product));
+  } catch (err) {
+    res.status(400).json(formatResponse(400, "Failed to add review", null));
+  }
+});
+
+// Delete a review from a product
+router.delete("/products/:id/reviews/:reviewId", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
+    }
+    product.productReviews.id(req.params.reviewId).remove();
+    await product.save();
+    res.json(formatResponse(200, "Review deleted successfully", product));
+  } catch (err) {
+    res.status(400).json(formatResponse(400, "Failed to delete review", null));
+  }
+});
+
+// Get related products (returns name, image URL, and ID)
+router.get("/related-products", async (req, res) => {
+  try {
+    const products = await Product.find({}, "productName productImageUrl _id");
+    res.json(
+      formatResponse(200, "Related products fetched successfully", products)
+    );
+  } catch (err) {
+    res
+      .status(500)
+      .json(formatResponse(500, "Failed to get related products", null));
+  }
+});
+
+module.exports = router;
