@@ -20,6 +20,16 @@ mongoose
     process.exit(10000);
   });
 
+  // If you need to customize CORS settings, uncomment and configure the following:
+app.use(
+  cors({
+    origin: "https://marble-foods-backend.vercel.app/", // Replace with your frontend's domain
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
