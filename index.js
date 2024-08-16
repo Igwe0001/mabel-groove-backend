@@ -1,4 +1,4 @@
-require("dotenv").config();
+require('dotenv').config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -9,16 +9,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Use the MongoDB URI from the .env file
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  console.log("Connected to MongoDB");
+})
+.then(() => console.log("Connected to MongoDB"))
+.catch(err => {
+  console.error("MongoDB connection error:", err);
+  process.exit(1);
 });
 
 app.listen(3000, () => {
@@ -27,3 +25,8 @@ app.listen(3000, () => {
 
 const productRoutes = require("./productRoutes");
 app.use("/api", productRoutes);
+
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+  res.status(500).json({ code: 500, message: "Internal Server Error", body: {} });
+});
