@@ -14,10 +14,13 @@ const productSchema = new mongoose.Schema({
   productImageUrl: String,
   productReviewImageUrl: String,
   productReviews: [reviewSchema],
+  productCode: String, // <--- changed to String
 });
 
-productSchema.virtual("productCode").get(function () {
-  return this.productName.toLowerCase().replace(/\s+/g, "-");
+// middleware function to set productCode before saving
+productSchema.pre("save", function (next) {
+  this.productCode = this.productName.toLowerCase().replace(/\s+/g, "-");
+  next();
 });
 
 productSchema.set("toJSON", {
@@ -25,7 +28,6 @@ productSchema.set("toJSON", {
     ret.id = ret._id; // rename _id to id
     delete ret._id; // remove _id
     delete ret.__v; // remove __v
-    ret.productCode = doc.productCode; // add productCode to the JSON output
     return ret;
   },
 });
@@ -35,7 +37,6 @@ reviewSchema.set("toJSON", {
     ret.id = ret._id; // rename _id to id
     delete ret._id; // remove _id
     delete ret.__v; // remove __v
-    ret.productCode = doc.productCode; // add productCode to the JSON output
     return ret;
   },
 });
