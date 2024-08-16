@@ -1,24 +1,16 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-
-// Use CORS middleware to allow requests from any origin
 app.use(cors());
-
-// You can customize the CORS configuration if needed:
-// app.use(cors({
-//   origin: 'http://your-frontend-domain.com',  // Replace with your frontend's domain
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   allowedHeaders: ['Content-Type', 'Authorization'],
-//   credentials: true
-// }));
-
 app.use(bodyParser.json());
 
-mongoose.connect("mongodb://localhost:27017/productsDB", {
+// Use the MongoDB URI from the .env file
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
