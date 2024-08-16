@@ -26,19 +26,20 @@ router.post("/products", async (req, res) => {
     res.status(400).json(formatResponse(400, "Failed to add product", null));
   }
 });
-
 // Get a product by productCode
-router.get("products/:productCode", async (req, res) => {
+router.get("/products/:productCode", async (req, res) => {
   const productCode = req.params.productCode;
   try {
     const product = await Product.findOne({ productCode: productCode });
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
     }
-    res.json(product);
+    res.json(formatResponse(200, "Product fetched successfully", product));
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json(formatResponse(500, "Internal Server Error", null));
   }
 });
 
