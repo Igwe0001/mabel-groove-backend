@@ -131,9 +131,22 @@ router.delete("/products/:id/reviews/:reviewId", async (req, res) => {
         .status(404)
         .json(formatResponse(404, "Product not found", null));
     }
-    product.productReviews.id(req.params.reviewId).remove();
-    await product.save();
-    res.json(formatResponse(200, "Review deleted successfully", product));
+
+    // Find the index of the review with the given reviewId
+    const reviewIndex = product.productReviews.findIndex(
+      (review) => review._id.toString() === req.params.reviewId
+    );
+
+    // If the review is found, remove it
+    if (reviewIndex !== -1) {
+      product.productReviews.splice(reviewIndex, 1);
+      await product.save();
+      res.json(formatResponse(200, "Review deleted successfully", product));
+    } else {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Review not found", null));
+    }
   } catch (err) {
     res
       .status(400)
@@ -142,6 +155,7 @@ router.delete("/products/:id/reviews/:reviewId", async (req, res) => {
       );
   }
 });
+
 
 // Get related products (returns name, image URL, and ID)
 router.get("/related-products", async (req, res) => {
