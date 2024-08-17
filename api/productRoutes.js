@@ -92,20 +92,33 @@ router.put("/products/:id", async (req, res) => {
 // Add a review to a product
 router.post("/products/:id/reviews", async (req, res) => {
   try {
+    const { reviewRating } = req.body;
+
+    // Check if the rating is within the allowed range
+    if (reviewRating < 1 || reviewRating > 5) {
+      return res
+        .status(400)
+        .json(
+          formatResponse(400, "Review rating must be between 1 and 5", null)
+        );
+    }
+
     const product = await Product.findById(req.params.id);
     if (!product) {
       return res
         .status(404)
         .json(formatResponse(404, "Product not found", null));
     }
+
     product.productReviews.push(req.body);
     await product.save();
+
     res
       .status(201)
       .json(formatResponse(201, "Review added successfully", product));
   } catch (err) {
-    console.log(req);
-    res.status(400).json(formatResponse(400, `${err} ${req}`, null));
+    console.error(err);
+    res.status(400).json(formatResponse(400, `${err}`, null));
   }
 });
 
