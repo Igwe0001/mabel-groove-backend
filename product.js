@@ -15,6 +15,16 @@ const productSchema = new mongoose.Schema({
   productIcon: String,
   productReviewImageUrl: String,
   productReviews: [reviewSchema],
+  productPricing: productPricingSchema,
+});
+
+const productPricingSchema = new mongoose.Schema({
+  pricingDetails: String,
+  pricingType: String,
+  pricingOutTurn: String,
+  pricingCount: String,
+  pricingMoisture: String,
+  pricingDefective: String,
 });
 
 productSchema.virtual("productCode").get(function () {
