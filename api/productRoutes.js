@@ -135,7 +135,11 @@ router.delete("/products/:id/reviews/:reviewId", async (req, res) => {
     await product.save();
     res.json(formatResponse(200, "Review deleted successfully", product));
   } catch (err) {
-    res.status(400).json(formatResponse(400, "Failed to delete review", null));
+    res
+      .status(400)
+      .json(
+        formatResponse(400, "Failed to delete review", { fullError: `${err}` })
+      );
   }
 });
 
