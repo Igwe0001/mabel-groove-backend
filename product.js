@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 
+// Define the productPricingSchema first
+const productPricingSchema = new mongoose.Schema({
+  pricingDetails: { type: String, default: "" },
+  pricingType: { type: String, default: "" },
+  pricingOutTurn: { type: String, default: "" },
+  pricingCount: { type: String, default: "" },
+  pricingMoisture: { type: String, default: "" },
+  pricingDefective: { type: String, default: "" },
+});
+
 const reviewSchema = new mongoose.Schema({
   reviewName: String,
   reviewEmail: String,
@@ -16,15 +26,6 @@ const productSchema = new mongoose.Schema({
   productReviewImageUrl: String,
   productReviews: [reviewSchema],
   productPricing: productPricingSchema,
-});
-
-const productPricingSchema = new mongoose.Schema({
-  pricingDetails: String,
-  pricingType: String,
-  pricingOutTurn: String,
-  pricingCount: String,
-  pricingMoisture: String,
-  pricingDefective: String,
 });
 
 productSchema.virtual("productCode").get(function () {
@@ -52,5 +53,4 @@ reviewSchema.set("toJSON", {
 });
 
 const Product = mongoose.model("Product", productSchema);
-
 module.exports = Product;
