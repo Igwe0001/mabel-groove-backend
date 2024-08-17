@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema({
   productShortDescription: String,
   productFullDescription: String,
   productImageUrl: String,
+  productIcon: String,
   productReviewImageUrl: String,
   productReviews: [reviewSchema],
 });
