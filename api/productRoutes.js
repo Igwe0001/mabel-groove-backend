@@ -36,7 +36,7 @@ router.get("/products/:productCode", async (req, res) => {
 
     // Find the product by productName and compare case-insensitively
     const product = await Product.findOne({
-      productName: { $regex: new RegExp(`^${productName}$`, "i") }
+      productName: { $regex: new RegExp(`^${productName}$`, "i") },
     });
 
     if (!product) {
@@ -50,7 +50,6 @@ router.get("/products/:productCode", async (req, res) => {
     res.status(500).json(formatResponse(500, "Internal Server Error", null));
   }
 });
-
 
 // Delete a product by ID
 router.delete("/products/:id", async (req, res) => {
@@ -105,7 +104,7 @@ router.post("/products/:id/reviews", async (req, res) => {
       .status(201)
       .json(formatResponse(201, "Review added successfully", product));
   } catch (err) {
-    res.status(400).json(formatResponse(400, "Failed to add review", null));
+    res.status(400).json(formatResponse(400, `${err}`, null));
   }
 });
 
