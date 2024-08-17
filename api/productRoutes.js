@@ -104,7 +104,8 @@ router.post("/products/:id/reviews", async (req, res) => {
       .status(201)
       .json(formatResponse(201, "Review added successfully", product));
   } catch (err) {
-    res.status(400).json(formatResponse(400, `${err}`, null));
+    console.log(req);
+    res.status(400).json(formatResponse(400, `${err} ${req}`, null));
   }
 });
 
