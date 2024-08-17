@@ -14,11 +14,36 @@ app.use(morgan("dev"));
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB"))
+  .then(async () => {
+    console.log("Connected to MongoDB");
+
+    // Check if any document is missing the productIcon field
+    const result = await mongoose.connection.db
+      .collection("products")
+      .find({ productIcon: { $exists: false } })
+      .limit(1)
+      .toArray();
+
+    if (result.length > 0) {
+      // Update all products to add the productIcon field
+      mongoose.connection.db
+        .collection("products")
+        .updateMany({}, { $set: { productIcon: "default-icon-url" } })
+        .then((result) => {
+          console.log(
+            `Updated ${result.modifiedCount} documents with productIcon`
+          );
+        })
+        .catch((err) => {
+          console.error("Error updating documents:", err);
+        });
+    }
+  })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
     process.exit(10000);
   });
+
 
 // If you need to customize CORS settings, uncomment and configure the following:
 app.use(
@@ -37,14 +62,10 @@ app.use(
 app.listen(1711, () => {
   console.log("Server is running on port 1711");
 });
+
 app.get("/", (req, res) => res.send("Express on Vercel"));
 const productRoutes = require("./api/productRoutes");
 app.use("/api", productRoutes);
-
-// Remove this duplicate route definition
-// app.get("/api/products", (req, res) => {
-//   res.json({ message: "Products endpoint works!" });
-// });
 
 app.use((err, req, res, next) => {
   console.error("Unhandled error:", err);
