@@ -156,11 +156,26 @@ router.delete("/products/:id/reviews/:reviewId", async (req, res) => {
   }
 });
 
-
 // Get related products (returns name, image URL, and ID)
 router.get("/related-products", async (req, res) => {
   try {
     const products = await Product.find({}, "productName productImageUrl _id");
+    res.json(
+      formatResponse(200, "Related products fetched successfully", products)
+    );
+  } catch (err) {
+    res
+      .status(500)
+      .json(formatResponse(500, "Failed to get related products", null));
+  }
+});
+
+router.get("/navbar-products", async (req, res) => {
+  try {
+    const products = await Product.find(
+      {},
+      "productName productIcon productShortDescription _id"
+    );
     res.json(
       formatResponse(200, "Related products fetched successfully", products)
     );
