@@ -17,33 +17,35 @@ mongoose
   .then(async () => {
     console.log("Connected to MongoDB");
 
-    // Check if any document is missing the productIcon field
-    const result = await mongoose.connection.db
+    // Update all products to add the productPricing field with default values
+    await mongoose.connection.db
       .collection("products")
-      .find({ productIcon: { $exists: false } })
-      .limit(1)
-      .toArray();
-
-    if (result.length > 0) {
-      // Update all products to add the productIcon field
-      mongoose.connection.db
-        .collection("products")
-        .updateMany({}, { $set: { productIcon: "default-icon-url" } })
-        .then((result) => {
-          console.log(
-            `Updated ${result.modifiedCount} documents with productIcon`
-          );
-        })
-        .catch((err) => {
-          console.error("Error updating documents:", err);
-        });
-    }
+      .updateMany(
+        { productPricing: { $exists: false } },
+        {
+          $set: {
+            "productPricing.pricingDetails": "",
+            "productPricing.pricingType": "",
+            "productPricing.pricingOutTurn": "",
+            "productPricing.pricingCount": "",
+            "productPricing.pricingMoisture": "",
+            "productPricing.pricingDefective": "",
+          },
+        }
+      )
+      .then((result) => {
+        console.log(
+          `Updated ${result.modifiedCount} documents with productPricing`
+        );
+      })
+      .catch((err) => {
+        console.error("Error updating documents:", err);
+      });
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);
     process.exit(10000);
   });
-
 
 // If you need to customize CORS settings, uncomment and configure the following:
 app.use(
