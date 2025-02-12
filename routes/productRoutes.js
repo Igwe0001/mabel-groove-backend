@@ -26,6 +26,7 @@ router.post("/products", async (req, res) => {
     res.status(400).json(formatResponse(400, "Failed to add product", null));
   }
 });
+
 // Get a product by productCode
 router.get("/products/:productCode", async (req, res) => {
   const productCode = req.params.productCode;

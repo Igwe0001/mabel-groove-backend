@@ -21,6 +21,7 @@ const productSchema = new mongoose.Schema({
   productName: { type: String, required: true },
   productShortDescription: String,
   productFullDescription: String,
+  productDescription: String, // Added this field
   productImageUrl: String,
   productIcon: String,
   productReviewImageUrl: String,
@@ -47,7 +48,6 @@ reviewSchema.set("toJSON", {
     ret.id = ret._id; // rename _id to id
     delete ret._id; // remove _id
     delete ret.__v; // remove __v
-    ret.productCode = doc.productCode; // add productCode to the JSON output
     return ret;
   },
 });
