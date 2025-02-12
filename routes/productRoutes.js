@@ -52,6 +52,36 @@ router.get("/products/:productCode", async (req, res) => {
   }
 });
 
+// Update a product by productCode
+router.put("/products/code/:productCode", async (req, res) => {
+  const productCode = req.params.productCode;
+
+  try {
+    // Convert productCode to productName format
+    const productName = productCode.replace(/-/g, " ").toLowerCase();
+
+    // Find and update product by productName (case-insensitive)
+    const updatedProduct = await Product.findOneAndUpdate(
+      { productName: { $regex: new RegExp(`^${productName}$`, "i") } },
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedProduct) {
+      return res
+        .status(404)
+        .json(formatResponse(404, "Product not found", null));
+    }
+    res.json(
+      formatResponse(200, "Product updated successfully", updatedProduct)
+    );
+  } catch (err) {
+    console.error(err);
+    res.status(400).json(formatResponse(400, "Failed to update product", null));
+  }
+});
+
+
 // Delete a product by ID
 router.delete("/products/:id", async (req, res) => {
   try {
